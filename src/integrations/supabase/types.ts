@@ -14,16 +14,314 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      follows: {
+        Row: {
+          created_at: string
+          follower_id: string
+          following_id: string
+        }
+        Insert: {
+          created_at?: string
+          follower_id: string
+          following_id: string
+        }
+        Update: {
+          created_at?: string
+          follower_id?: string
+          following_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "follows_follower_id_fkey"
+            columns: ["follower_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "follows_following_id_fkey"
+            columns: ["following_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      notifications: {
+        Row: {
+          actor_id: string | null
+          created_at: string
+          id: string
+          message: string
+          post_id: string | null
+          read: boolean
+          type: Database["public"]["Enums"]["notification_type"]
+          user_id: string
+        }
+        Insert: {
+          actor_id?: string | null
+          created_at?: string
+          id?: string
+          message: string
+          post_id?: string | null
+          read?: boolean
+          type: Database["public"]["Enums"]["notification_type"]
+          user_id: string
+        }
+        Update: {
+          actor_id?: string | null
+          created_at?: string
+          id?: string
+          message?: string
+          post_id?: string | null
+          read?: boolean
+          type?: Database["public"]["Enums"]["notification_type"]
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "notifications_actor_id_fkey"
+            columns: ["actor_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "notifications_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "posts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "notifications_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      post_interests: {
+        Row: {
+          created_at: string
+          post_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          post_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          post_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "post_interests_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "posts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "post_interests_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      post_saves: {
+        Row: {
+          created_at: string
+          post_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          post_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          post_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "post_saves_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "posts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "post_saves_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      posts: {
+        Row: {
+          created_at: string
+          description: string
+          event_date: string | null
+          id: string
+          registration_link: string | null
+          skills: string[]
+          title: string
+          type: Database["public"]["Enums"]["post_type"]
+          user_id: string
+          venue: string | null
+        }
+        Insert: {
+          created_at?: string
+          description?: string
+          event_date?: string | null
+          id?: string
+          registration_link?: string | null
+          skills?: string[]
+          title: string
+          type: Database["public"]["Enums"]["post_type"]
+          user_id: string
+          venue?: string | null
+        }
+        Update: {
+          created_at?: string
+          description?: string
+          event_date?: string | null
+          id?: string
+          registration_link?: string | null
+          skills?: string[]
+          title?: string
+          type?: Database["public"]["Enums"]["post_type"]
+          user_id?: string
+          venue?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "posts_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profiles: {
+        Row: {
+          bio: string
+          created_at: string
+          email: string
+          full_name: string
+          id: string
+          linkedin: string
+          phone: string
+          photo_url: string
+          role: Database["public"]["Enums"]["account_role"]
+          skills: string[]
+        }
+        Insert: {
+          bio?: string
+          created_at?: string
+          email?: string
+          full_name?: string
+          id: string
+          linkedin?: string
+          phone?: string
+          photo_url?: string
+          role?: Database["public"]["Enums"]["account_role"]
+          skills?: string[]
+        }
+        Update: {
+          bio?: string
+          created_at?: string
+          email?: string
+          full_name?: string
+          id?: string
+          linkedin?: string
+          phone?: string
+          photo_url?: string
+          role?: Database["public"]["Enums"]["account_role"]
+          skills?: string[]
+        }
+        Relationships: []
+      }
+      team_up_requests: {
+        Row: {
+          created_at: string
+          id: string
+          post_id: string | null
+          recipient_id: string
+          requester_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          post_id?: string | null
+          recipient_id: string
+          requester_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          post_id?: string | null
+          recipient_id?: string
+          requester_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "team_up_requests_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "posts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "team_up_requests_recipient_id_fkey"
+            columns: ["recipient_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "team_up_requests_requester_id_fkey"
+            columns: ["requester_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      get_follow_counts: {
+        Args: { target: string }
+        Returns: {
+          followers: number
+          following: number
+        }[]
+      }
     }
     Enums: {
-      [_ in never]: never
+      account_role: "user" | "organizer" | "institution" | "organization"
+      notification_type:
+        | "follow"
+        | "interest_project"
+        | "interest_hackathon"
+        | "team_up"
+        | "team_up_hackathon"
+      post_type: "project" | "hackathon"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +448,16 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      account_role: ["user", "organizer", "institution", "organization"],
+      notification_type: [
+        "follow",
+        "interest_project",
+        "interest_hackathon",
+        "team_up",
+        "team_up_hackathon",
+      ],
+      post_type: ["project", "hackathon"],
+    },
   },
 } as const
