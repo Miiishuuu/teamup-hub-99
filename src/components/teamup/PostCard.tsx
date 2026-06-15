@@ -159,12 +159,14 @@ function InterestedUserCard({ user, postId }: { user: Profile; postId: string })
   return (
     <div className="bg-surface-wash/60 rounded-xl p-3 border border-navy-dark/5">
       <div className="flex items-center gap-3">
-        <Avatar name={user.full_name} photoUrl={user.photo_url} size={40} />
-        <div className="min-w-0 flex-1">
-          <p className="text-sm font-bold font-display text-navy-dark truncate">{user.full_name}</p>
-          <p className="text-[11px] font-mono uppercase text-navy-light">{roleLabel(user.role)}</p>
-          {user.skills?.length > 0 && <div className="mt-1.5"><SkillChips skills={user.skills.slice(0, 4)} /></div>}
-        </div>
+        <Link to="/profile/$userId" params={{ userId: user.id }} className="flex items-center gap-3 min-w-0 flex-1">
+          <Avatar name={user.full_name} photoUrl={user.photo_url} size={40} />
+          <div className="min-w-0 flex-1">
+            <p className="text-sm font-bold font-display text-navy-dark truncate hover:underline">{user.full_name}</p>
+            <p className="text-[11px] font-mono uppercase text-navy-light">{roleLabel(user.role)}</p>
+            {user.skills?.length > 0 && <div className="mt-1.5"><SkillChips skills={user.skills.slice(0, 4)} /></div>}
+          </div>
+        </Link>
         <FollowButton targetId={user.id} />
       </div>
       <div className="mt-2"><TeamUpButton recipientId={user.id} recipientProfile={user} postId={postId} isHackathon /></div>
