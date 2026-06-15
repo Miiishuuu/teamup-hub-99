@@ -110,7 +110,7 @@ export function PostCard({ post }: { post: Post }) {
         <p className="text-sm text-navy-mid/85 leading-relaxed mb-4 text-pretty whitespace-pre-wrap">{post.description}</p>
         <SkillChips skills={post.skills || []} />
         {isHackathon && post.registration_link && (
-          <a href={post.registration_link} target="_blank" rel="noopener noreferrer" className="inline-block mt-4 text-xs font-bold text-navy-light underline underline-offset-4">Registration link →</a>
+          <a href={/^https?:\/\//i.test(post.registration_link) ? post.registration_link : '#'} target="_blank" rel="noopener noreferrer" className="inline-block mt-4 text-xs font-bold text-navy-light underline underline-offset-4">Registration link →</a>
         )}
         <div className="flex items-center justify-between mt-5 pt-4 border-t border-navy-dark/5">
           <div className="flex items-center gap-2 text-xs text-navy-light font-mono"><Users className="size-3.5" />{post.interested_count ?? 0} interested</div>
