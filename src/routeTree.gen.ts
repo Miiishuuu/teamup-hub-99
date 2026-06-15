@@ -13,9 +13,9 @@ import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as AuthenticatedIndexRouteImport } from './routes/_authenticated/index'
 import { Route as AuthenticatedSearchRouteImport } from './routes/_authenticated/search'
-import { Route as AuthenticatedProfileRouteImport } from './routes/_authenticated/profile'
 import { Route as AuthenticatedNotificationsRouteImport } from './routes/_authenticated/notifications'
 import { Route as AuthenticatedCreateRouteImport } from './routes/_authenticated/create'
+import { Route as AuthenticatedProfileIndexRouteImport } from './routes/_authenticated/profile.index'
 import { Route as AuthenticatedProfileUserIdRouteImport } from './routes/_authenticated/profile.$userId'
 
 const AuthRoute = AuthRouteImport.update({
@@ -37,11 +37,6 @@ const AuthenticatedSearchRoute = AuthenticatedSearchRouteImport.update({
   path: '/search',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
-const AuthenticatedProfileRoute = AuthenticatedProfileRouteImport.update({
-  id: '/profile',
-  path: '/profile',
-  getParentRoute: () => AuthenticatedRouteRoute,
-} as any)
 const AuthenticatedNotificationsRoute =
   AuthenticatedNotificationsRouteImport.update({
     id: '/notifications',
@@ -53,11 +48,17 @@ const AuthenticatedCreateRoute = AuthenticatedCreateRouteImport.update({
   path: '/create',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedProfileIndexRoute =
+  AuthenticatedProfileIndexRouteImport.update({
+    id: '/profile/',
+    path: '/profile/',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedProfileUserIdRoute =
   AuthenticatedProfileUserIdRouteImport.update({
-    id: '/$userId',
-    path: '/$userId',
-    getParentRoute: () => AuthenticatedProfileRoute,
+    id: '/profile/$userId',
+    path: '/profile/$userId',
+    getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
 
 export interface FileRoutesByFullPath {
@@ -65,18 +66,18 @@ export interface FileRoutesByFullPath {
   '/auth': typeof AuthRoute
   '/create': typeof AuthenticatedCreateRoute
   '/notifications': typeof AuthenticatedNotificationsRoute
-  '/profile': typeof AuthenticatedProfileRouteWithChildren
   '/search': typeof AuthenticatedSearchRoute
   '/profile/$userId': typeof AuthenticatedProfileUserIdRoute
+  '/profile/': typeof AuthenticatedProfileIndexRoute
 }
 export interface FileRoutesByTo {
   '/auth': typeof AuthRoute
   '/create': typeof AuthenticatedCreateRoute
   '/notifications': typeof AuthenticatedNotificationsRoute
-  '/profile': typeof AuthenticatedProfileRouteWithChildren
   '/search': typeof AuthenticatedSearchRoute
   '/': typeof AuthenticatedIndexRoute
   '/profile/$userId': typeof AuthenticatedProfileUserIdRoute
+  '/profile': typeof AuthenticatedProfileIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -84,10 +85,10 @@ export interface FileRoutesById {
   '/auth': typeof AuthRoute
   '/_authenticated/create': typeof AuthenticatedCreateRoute
   '/_authenticated/notifications': typeof AuthenticatedNotificationsRoute
-  '/_authenticated/profile': typeof AuthenticatedProfileRouteWithChildren
   '/_authenticated/search': typeof AuthenticatedSearchRoute
   '/_authenticated/': typeof AuthenticatedIndexRoute
   '/_authenticated/profile/$userId': typeof AuthenticatedProfileUserIdRoute
+  '/_authenticated/profile/': typeof AuthenticatedProfileIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -96,28 +97,28 @@ export interface FileRouteTypes {
     | '/auth'
     | '/create'
     | '/notifications'
-    | '/profile'
     | '/search'
     | '/profile/$userId'
+    | '/profile/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/auth'
     | '/create'
     | '/notifications'
-    | '/profile'
     | '/search'
     | '/'
     | '/profile/$userId'
+    | '/profile'
   id:
     | '__root__'
     | '/_authenticated'
     | '/auth'
     | '/_authenticated/create'
     | '/_authenticated/notifications'
-    | '/_authenticated/profile'
     | '/_authenticated/search'
     | '/_authenticated/'
     | '/_authenticated/profile/$userId'
+    | '/_authenticated/profile/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -155,13 +156,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedSearchRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
-    '/_authenticated/profile': {
-      id: '/_authenticated/profile'
-      path: '/profile'
-      fullPath: '/profile'
-      preLoaderRoute: typeof AuthenticatedProfileRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
-    }
     '/_authenticated/notifications': {
       id: '/_authenticated/notifications'
       path: '/notifications'
@@ -176,41 +170,39 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedCreateRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/profile/': {
+      id: '/_authenticated/profile/'
+      path: '/profile'
+      fullPath: '/profile/'
+      preLoaderRoute: typeof AuthenticatedProfileIndexRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/profile/$userId': {
       id: '/_authenticated/profile/$userId'
-      path: '/$userId'
+      path: '/profile/$userId'
       fullPath: '/profile/$userId'
       preLoaderRoute: typeof AuthenticatedProfileUserIdRouteImport
-      parentRoute: typeof AuthenticatedProfileRoute
+      parentRoute: typeof AuthenticatedRouteRoute
     }
   }
 }
 
-interface AuthenticatedProfileRouteChildren {
-  AuthenticatedProfileUserIdRoute: typeof AuthenticatedProfileUserIdRoute
-}
-
-const AuthenticatedProfileRouteChildren: AuthenticatedProfileRouteChildren = {
-  AuthenticatedProfileUserIdRoute: AuthenticatedProfileUserIdRoute,
-}
-
-const AuthenticatedProfileRouteWithChildren =
-  AuthenticatedProfileRoute._addFileChildren(AuthenticatedProfileRouteChildren)
-
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedCreateRoute: typeof AuthenticatedCreateRoute
   AuthenticatedNotificationsRoute: typeof AuthenticatedNotificationsRoute
-  AuthenticatedProfileRoute: typeof AuthenticatedProfileRouteWithChildren
   AuthenticatedSearchRoute: typeof AuthenticatedSearchRoute
   AuthenticatedIndexRoute: typeof AuthenticatedIndexRoute
+  AuthenticatedProfileUserIdRoute: typeof AuthenticatedProfileUserIdRoute
+  AuthenticatedProfileIndexRoute: typeof AuthenticatedProfileIndexRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedCreateRoute: AuthenticatedCreateRoute,
   AuthenticatedNotificationsRoute: AuthenticatedNotificationsRoute,
-  AuthenticatedProfileRoute: AuthenticatedProfileRouteWithChildren,
   AuthenticatedSearchRoute: AuthenticatedSearchRoute,
   AuthenticatedIndexRoute: AuthenticatedIndexRoute,
+  AuthenticatedProfileUserIdRoute: AuthenticatedProfileUserIdRoute,
+  AuthenticatedProfileIndexRoute: AuthenticatedProfileIndexRoute,
 }
 
 const AuthenticatedRouteRouteWithChildren =
