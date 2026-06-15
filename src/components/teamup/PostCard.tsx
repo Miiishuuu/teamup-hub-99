@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { Avatar, SkillChips, roleLabel } from "./Avatar";
-import { Bookmark, Calendar, MapPin, Sparkles, Users, Check } from "lucide-react";
+import { Bookmark, Calendar, MapPin, Sparkles, Users, Check, Trash2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { supabase } from "@/integrations/supabase/client";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -22,6 +22,7 @@ export function PostCard({ post }: { post: Post }) {
       if (!user) return;
       if (post.is_interested) {
         await supabase.from("post_interests").delete().eq("user_id", user.id).eq("post_id", post.id);
+        return { undone: true };
       } else {
         const { error } = await supabase.from("post_interests").insert({ user_id: user.id, post_id: post.id });
         if (error) throw error;
@@ -38,9 +39,10 @@ export function PostCard({ post }: { post: Post }) {
             post_id: post.id,
           });
         }
+        return { undone: false };
       }
     },
-    onSuccess: () => qc.invalidateQueries(),
+    onSuccess: (res) => { qc.invalidateQueries(); toast.success(res?.undone ? "Removed interest" : "Marked as interested"); },
     onError: (e: Error) => toast.error(e.message),
   });
 
@@ -49,12 +51,25 @@ export function PostCard({ post }: { post: Post }) {
       if (!user) return;
       if (post.is_saved) {
         await supabase.from("post_saves").delete().eq("user_id", user.id).eq("post_id", post.id);
+        return { undone: true };
       } else {
         const { error } = await supabase.from("post_saves").insert({ user_id: user.id, post_id: post.id });
         if (error) throw error;
+        return { undone: false };
       }
     },
-    onSuccess: () => qc.invalidateQueries(),
+    onSuccess: (res) => { qc.invalidateQueries(); toast.success(res?.undone ? "Unsaved" : "Saved"); },
+    onError: (e: Error) => toast.error(e.message),
+  });
+
+  const deletePost = useMutation({
+    mutationFn: async () => {
+      if (!confirm("Delete this post? This cannot be undone.")) return { cancelled: true } as const;
+      const { error } = await supabase.from("posts").delete().eq("id", post.id);
+      if (error) throw error;
+      return { cancelled: false } as const;
+    },
+    onSuccess: (res) => { if (res?.cancelled) return; qc.invalidateQueries(); toast.success("Post deleted"); },
     onError: (e: Error) => toast.error(e.message),
   });
 
@@ -99,11 +114,9 @@ export function PostCard({ post }: { post: Post }) {
         )}
         <div className="flex items-center justify-between mt-5 pt-4 border-t border-navy-dark/5">
           <div className="flex items-center gap-2 text-xs text-navy-light font-mono"><Users className="size-3.5" />{post.interested_count ?? 0} interested</div>
-          {isHackathon && (
-            <button onClick={() => setShowInterested((v) => !v)} className="text-[11px] font-bold text-navy-mid underline underline-offset-4 decoration-navy-light/30">
-              {showInterested ? "Hide" : "View"} Interested List
-            </button>
-          )}
+          <button onClick={() => setShowInterested((v) => !v)} className="text-[11px] font-bold text-navy-mid underline underline-offset-4 decoration-navy-light/30">
+            {showInterested ? "Hide" : "View"} Interested List
+          </button>
         </div>
         <div className="flex gap-2 mt-4">
           <button onClick={() => toggleInterest.mutate()} disabled={toggleInterest.isPending} className={cn("flex-1 py-2.5 rounded-lg text-xs font-bold font-display transition-colors flex items-center justify-center gap-1.5", post.is_interested ? "bg-success-soft text-success border border-success/20" : "bg-navy-dark/5 text-navy-dark border border-navy-dark/10 hover:bg-navy-dark/10")}>
@@ -118,7 +131,12 @@ export function PostCard({ post }: { post: Post }) {
         {!isHackathon && !isOwn && (
           <TeamUpButton recipientId={post.user_id} recipientProfile={post.author} postId={post.id} isHackathon={false} className="mt-2" />
         )}
-        {isHackathon && showInterested && <InterestedList postId={post.id} />}
+        {showInterested && <InterestedList postId={post.id} />}
+        {isOwn && (
+          <button onClick={() => deletePost.mutate()} disabled={deletePost.isPending} className="mt-3 w-full py-2 rounded-lg text-[11px] font-bold font-display text-danger bg-danger/5 border border-danger/15 hover:bg-danger/10 flex items-center justify-center gap-1.5">
+            <Trash2 className="size-3.5" /> Delete post
+          </button>
+        )}
       </div>
     </article>
   );
