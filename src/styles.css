@@ -5,18 +5,37 @@
 @custom-variant dark (&:is(.dark *));
 
 /*
- * Design system definition.
- *
- * The @theme inline block maps CSS custom properties to Tailwind utility
- * classes (e.g. --color-primary -> bg-primary, text-primary).
- *
- * The :root and .dark blocks define the actual color values using oklch.
- * All colors MUST use oklch format.
- *
- * To add a new semantic color:
- * 1. Add the variable to :root (light value) and .dark (dark value)
- * 2. Register it in @theme inline as --color-<name>: var(--<name>)
+ * TeamUp design system — Navy Trust palette + Space Grotesk / DM Sans.
  */
+
+@theme {
+  --color-navy-dark: #0f1b3d;
+  --color-navy-mid: #1e3a5f;
+  --color-navy-light: #3b6fa0;
+  --color-surface-wash: #e8edf3;
+  --color-paper: #fcfcfd;
+  --color-success: #0d7a5f;
+  --color-success-soft: #e6f4ef;
+  --font-display: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
+  --font-body: "DM Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+  --ease-out-expo: cubic-bezier(0.19, 1, 0.22, 1);
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+.animate-entrance {
+  animation: slideUp 0.5s var(--ease-out-expo) both;
+}
+.animate-fadein {
+  animation: fadeIn 0.25s ease-out both;
+}
 
 @theme inline {
   --radius-sm: calc(var(--radius) - 4px);
@@ -62,26 +81,26 @@
 }
 
 :root {
-  --radius: 0.625rem;
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.129 0.042 264.695);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.129 0.042 264.695);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.129 0.042 264.695);
-  --primary: oklch(0.208 0.042 265.755);
-  --primary-foreground: oklch(0.984 0.003 247.858);
-  --secondary: oklch(0.968 0.007 247.896);
-  --secondary-foreground: oklch(0.208 0.042 265.755);
-  --muted: oklch(0.968 0.007 247.896);
-  --muted-foreground: oklch(0.554 0.046 257.417);
-  --accent: oklch(0.968 0.007 247.896);
-  --accent-foreground: oklch(0.208 0.042 265.755);
+  --radius: 0.75rem;
+  --background: #e8edf3;
+  --foreground: #0f1b3d;
+  --card: #fcfcfd;
+  --card-foreground: #0f1b3d;
+  --popover: #fcfcfd;
+  --popover-foreground: #0f1b3d;
+  --primary: #0f1b3d;
+  --primary-foreground: #fcfcfd;
+  --secondary: #e8edf3;
+  --secondary-foreground: #0f1b3d;
+  --muted: #e8edf3;
+  --muted-foreground: #3b6fa0;
+  --accent: #e8edf3;
+  --accent-foreground: #0f1b3d;
   --destructive: oklch(0.577 0.245 27.325);
   --destructive-foreground: oklch(0.984 0.003 247.858);
-  --border: oklch(0.929 0.013 255.508);
-  --input: oklch(0.929 0.013 255.508);
-  --ring: oklch(0.704 0.04 256.788);
+  --border: rgba(15, 27, 61, 0.08);
+  --input: rgba(15, 27, 61, 0.12);
+  --ring: #3b6fa0;
   --chart-1: oklch(0.646 0.222 41.116);
   --chart-2: oklch(0.6 0.118 184.704);
   --chart-3: oklch(0.398 0.07 227.392);
@@ -140,5 +159,11 @@
   body {
     background-color: var(--color-background);
     color: var(--color-foreground);
+    font-family: var(--font-body);
+    -webkit-font-smoothing: antialiased;
+  }
+  h1, h2, h3, h4 {
+    font-family: var(--font-display);
+    letter-spacing: -0.01em;
   }
 }
