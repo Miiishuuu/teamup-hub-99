@@ -86,6 +86,10 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
       { name: "theme-color", content: "#0f1b3d" },
+      { name: "twitter:title", content: "TeamUp — Student Collaboration & Hackathon Networking" },
+      { name: "twitter:description", content: "Find teammates, build projects, and join hackathons. TeamUp is the professional network built for students." },
+      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/19c7399c-de2c-4a90-9bd1-10ec12cbdf11/id-preview-2c972d8a--39a9262d-6abe-4a98-a13e-e7fb311a5fd7.lovable.app-1781551391762.png" },
+      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/19c7399c-de2c-4a90-9bd1-10ec12cbdf11/id-preview-2c972d8a--39a9262d-6abe-4a98-a13e-e7fb311a5fd7.lovable.app-1781551391762.png" },
     ],
     links: [
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
