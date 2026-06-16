@@ -96,9 +96,14 @@ async function enrichPosts(posts: Post[], currentUserId: string): Promise<Post[]
 }
 
 export async function fetchProfile(userId: string): Promise<Profile | null> {
-  const { data, error } = await supabase.from("profiles").select("*").eq("id", userId).maybeSingle();
+  const { data, error } = await supabase
+    .from("profiles")
+    .select("id, full_name, role, bio, skills, linkedin, photo_url, created_at")
+    .eq("id", userId)
+    .maybeSingle();
   if (error) throw error;
-  return data as Profile | null;
+  if (!data) return null;
+  return { ...data, email: "", phone: "" } as Profile;
 }
 
 export async function fetchFollowCounts(userId: string) {

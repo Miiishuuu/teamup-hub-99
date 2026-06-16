@@ -214,6 +214,15 @@ export function TeamUpButton({ recipientId, recipientProfile, postId, isHackatho
   const qc = useQueryClient();
   const key = ["teamup", user?.id, recipientId, postId ?? "null"];
   const { data: existing } = useQuery({ queryKey: key, queryFn: () => fetchTeamUpRequest(user!.id, recipientId, postId), enabled: !!user && user.id !== recipientId });
+  const { data: contact } = useQuery({
+    queryKey: ["unlocked-contact", recipientId],
+    queryFn: async () => {
+      const { data, error } = await supabase.rpc("get_unlocked_contact", { target: recipientId });
+      if (error) throw error;
+      return (data as Array<{ email: string; phone: string }>)?.[0] ?? null;
+    },
+    enabled: !!user && user.id !== recipientId && !!existing,
+  });
   const m = useMutation({
     mutationFn: async () => {
       if (!user) return;
@@ -241,7 +250,7 @@ export function TeamUpButton({ recipientId, recipientProfile, postId, isHackatho
         <div className="mt-2 bg-navy-dark/5 rounded-lg p-3 border border-navy-dark/10 animate-fadein">
           <p className="text-[10px] font-bold tracking-widest text-navy-light uppercase mb-2">Contact unlocked</p>
           <div className="space-y-1.5 text-xs font-mono">
-            <div className="flex items-center justify-between gap-2"><span className="text-navy-light uppercase text-[10px]">Email</span><span className="text-navy-dark truncate">{recipientProfile.email || "—"}</span></div>
+            <div className="flex items-center justify-between gap-2"><span className="text-navy-light uppercase text-[10px]">Email</span><span className="text-navy-dark truncate">{contact?.email || "—"}</span></div>
             <div className="flex items-center justify-between gap-2"><span className="text-navy-light uppercase text-[10px]">LinkedIn</span><span className="text-navy-dark truncate">{recipientProfile.linkedin || "—"}</span></div>
           </div>
         </div>

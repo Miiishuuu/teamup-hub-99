@@ -312,6 +312,20 @@ export type Database = {
           following: number
         }[]
       }
+      get_my_contact: {
+        Args: never
+        Returns: {
+          email: string
+          phone: string
+        }[]
+      }
+      get_unlocked_contact: {
+        Args: { target: string }
+        Returns: {
+          email: string
+          phone: string
+        }[]
+      }
     }
     Enums: {
       account_role: "user" | "organizer" | "institution" | "organization"
